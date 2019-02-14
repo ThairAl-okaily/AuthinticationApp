@@ -64,9 +64,13 @@ app.post("/login",passport.authenticate("local", {
     successRedirect: "/secret",
     failureRedirect: "/login"
 }), (req,res) => {
-
 });
 
+//logout rout
+app.get("/logout", (req,res) => {
+    req.logout();
+    res.redirect("/");
+});
 
 // home rout
 app.get('/', (req,res) => {
@@ -74,13 +78,19 @@ app.get('/', (req,res) => {
 });
 
 //secret rout
-app.get('/secret', (req,res) => {
+app.get('/secret', isLoggedIn, (req,res) => {
     res.render('secret');
 });
  
 
+// is logged in  
 
-
+function isLoggedIn (req, res, nxt){
+    if(req.isAuthenticated()){
+        return nxt();
+    }
+    res.redirect("/login");
+}
 
 
 ///////////////
