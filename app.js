@@ -5,14 +5,30 @@ var bodyParser    = require("body-parser");
 var passport      = require("passport");
 var localStrategy = require("passport-local");
 var passportLM    = require("passport-local-mongoose");
+var User          = require("./models/user");
+
 
 
 var app = express();
 app.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(require("express-session")({
+    secret: "the only thing in the mind of shark is eat",
+    resave: false,
+    saveUninitialized: false
+}));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 mongoose.connect("mongodb://localhost/authApp", {useNewUrlParser: true});
 
-app.use(bodyParser.urlencoded({extended: true}));
+
+
+
+
 
 app.get('/', (req,res) => {
     res.render('home');
