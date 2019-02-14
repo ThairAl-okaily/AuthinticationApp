@@ -20,6 +20,7 @@ app.use(require("express-session")({
     saveUninitialized: false
 }));
 
+passport.use(new localStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
@@ -51,6 +52,22 @@ app.post("/regester", (req,res) => {
         });
     });
 });
+
+// LOGIN ROUT //#endregion
+app.get("/login", (req,res) => {
+    res.render('login');
+});
+
+//login logic magic
+//middleware
+app.post("/login",passport.authenticate("local", {
+    successRedirect: "/secret",
+    failureRedirect: "/login"
+}), (req,res) => {
+
+});
+
+
 // home rout
 app.get('/', (req,res) => {
     res.render('home');
