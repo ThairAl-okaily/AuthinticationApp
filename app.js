@@ -28,19 +28,47 @@ mongoose.connect("mongodb://localhost/authApp", {useNewUrlParser: true});
 
 
 
+///////////////
+/// routs
+//////////////
 
+// auth routs 
+app.get("/regester", (req,res) => {
+    res.render('regester');
+});
 
+//handling sign up 
+app.post("/regester", (req,res) => {
+    // req.body.username
+    // req.body.password
+    User.register(new User({username: req.body.username}), req.body.password, (err,usr) => {
+        if(err){
+            console.log(err);
+            return res.render("regester");
+        }
+        passport.authenticate("local")(req, res, () => {
+            res.redirect("/secret");
+        });
+    });
+});
+// home rout
 app.get('/', (req,res) => {
     res.render('home');
 });
 
-
+//secret rout
 app.get('/secret', (req,res) => {
     res.render('secret');
 });
  
 
-// node server
+
+
+
+
+///////////////
+/// server
+//////////////
 
 const http = require('http');
 const port = 4000;
@@ -53,4 +81,3 @@ respond.end("Hello");
 app.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
 });
-
